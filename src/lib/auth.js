@@ -72,9 +72,12 @@ function dbRowToRecipe(row) {
 }
 async function sbLoadRecipes(userId) {
   const { data, error } = await supabase.from("recipes").select("*")
-    .eq("user_id", userId).is("deleted_at", null).order("created_at", { ascending:false });
+    .eq("user_id", userId)
+    .is("deleted_at", null)
+    .order("created_at", { ascending: false })
+    .limit(500); // reasonable upper bound; revisit if users hit this
   if (error) { console.error(error); return []; }
-  return (data||[]).map(dbRowToRecipe);
+  return (data || []).map(dbRowToRecipe);
 }
 async function sbLoadTrash(userId) {
   const { data, error } = await supabase.from("recipes").select("*")
